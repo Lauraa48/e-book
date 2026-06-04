@@ -2374,6 +2374,8 @@
         }
 
         var voices = window.speechSynthesis.getVoices();
+
+        console.log("Daftar Suara Tersedia saat ini:", voices.map(v => ({name: v.name, lang: v.lang})));
         if (voices.length > 0) {
           var v = pickVoice(voices);
           if (v) u.voice = v;
