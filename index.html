@@ -1731,77 +1731,45 @@
         /* LOGIKA KALKULASI DAN PENOMORAN DAFTAR ISI DAN BAB */
         /* ================================================= */
 
-        // Buat susunan awal item ToC statis beserta target indeks & nomor halaman visualnya (1-indexed)
         var tocItems = [
-          {
-            en: "Introduction",
-            id: "Kata Pengantar",
-            targetIdx: 1,
-            displayPage: 2,
-          },
-          {
-            en: "Developer Profile",
-            id: "Biodata Pengembang",
-            targetIdx: 2,
-            displayPage: 3,
-          },
-          {
-            en: "Learning Achievement",
-            id: "Capaian Pembelajaran",
-            targetIdx: 3,
-            displayPage: 4,
-          },
-          {
-            en: "Learning Objectives",
-            id: "Tujuan Pembelajaran",
-            targetIdx: 4,
-            displayPage: 5,
-          },
-          {
-            en: "User Guide",
-            id: "Petunjuk Pengguna",
-            targetIdx: 5,
-            displayPage: 6,
-          },
-          {
-            en: "Table of Content",
-            id: "Daftar Isi",
-            targetIdx: 6,
-            displayPage: 7,
-          },
+          { en: "Introduction", id: "Kata Pengantar", targetIdx: 1, displayPage: 2 },
+          { en: "Developer Profile", id: "Biodata Pengembang", targetIdx: 2, displayPage: 3 },
+          { en: "Learning Achievement", id: "Capaian Pembelajaran", targetIdx: 3, displayPage: 4 },
+          { en: "Learning Objectives", id: "Tujuan Pembelajaran", targetIdx: 4, displayPage: 5 },
+          { en: "User Guide", id: "Petunjuk Pengguna", targetIdx: 5, displayPage: 6 },
+          { en: "Table of Content", id: "Daftar Isi", targetIdx: fixedPages.length, displayPage: fixedPages.length + 1 },
         ];
 
-        // Hitung total item untuk pembagian halaman daftar isi (5 card per halaman)
-        var totalItemsCount =
-          tocItems.length + appData.kosakata.chapters.length + 1; // +1 untuk Quiz
+        // 1. Saring bab yang benar-benar ada isinya saja (mencegah error bab kosong)
+        var validChapters = (appData.kosakata.chapters || []).filter(function(bab) {
+           return bab && bab.words && bab.words.length > 0;
+        });
+
+        // 2. Hitung kebutuhan halaman dengan jumlah item yang valid
+        var totalItemsCount = tocItems.length + validChapters.length + 1; // +1 untuk Quiz
         var tocPagesNeeded = Math.ceil(totalItemsCount / 6);
 
-        // Halaman Kosakata pertama akan mulai tepat setelah seluruh halaman Daftar Isi selesai
-        var runningChapterIdx = 6 + tocPagesNeeded;
+        // 3. Gunakan fixedPages.length (dinamis), bukan angka 6 manual
+        var runningChapterIdx = fixedPages.length + tocPagesNeeded;
 
-        // Memasukkan Bab Kosakata dari JSON ke list Daftar Isi
-        var chapters = appData.kosakata.chapters || [];
-        chapters.forEach(function (bab) {
-          if (!bab || !bab.words) return;
-
+        // 4. Masukkan Bab Kosakata ke list Daftar Isi
+        validChapters.forEach(function (bab) {
           chapterStartPages[bab.title] = runningChapterIdx;
 
-          // Mengambil judul Indonesia dari JSON (fleksibel jika nama variabelnya bab.title_id atau bab.id_)
           var judulIndonesiaBab = bab.title_id || bab.id_ || bab.title;
 
           tocItems.push({
-            en: bab.title, // Judul asli (Inggris)
-            id: judulIndonesiaBab, // Judul terjemahan (Indonesia)
+            en: bab.title,
+            id: judulIndonesiaBab,
             targetIdx: runningChapterIdx,
             displayPage: runningChapterIdx + 1,
           });
 
-          // Kalkulasi halaman yang dihabiskan oleh bab ini
           var pagesForThisChapter = Math.ceil(bab.words.length / 6);
           runningChapterIdx += pagesForThisChapter;
         });
 
-        // Masukkan halaman Kuis paling terakhir
+        // 5. Masukkan halaman Kuis paling terakhir
         chapterStartPages["Quiz"] = runningChapterIdx;
         tocItems.push({
           en: "Quiz",
@@ -1810,12 +1778,12 @@
           displayPage: runningChapterIdx + 1,
         });
 
-        // Pecah susunan array tocItems menjadi kelompok maksimal 5 card per halaman
+        // 6. Pecah susunan array tocItems (6 card per halaman)
         var tocChunks = [];
         for (var j = 0; j < tocItems.length; j += 6) {
           tocChunks.push(tocItems.slice(j, j + 6));
         }
-
+        
         // Generate HTML Halaman Table of Content
         tocChunks.forEach(function (chunk) {
           var cardsHtml = chunk
