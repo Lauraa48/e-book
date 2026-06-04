@@ -1691,10 +1691,8 @@
       async function loadApp() {
         var results = await Promise.all([
           tryFetchJSON("./data/kosakata.json", { chapters: [] }),
-          tryFetchJSON("./data/quiz.json", []),
         ]);
         appData.kosakata = results[0];
-        appData.quiz = results[1];
 
         var container = document.getElementById("book-container");
         var htmlString = "";
