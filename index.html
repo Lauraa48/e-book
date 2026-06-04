@@ -1826,7 +1826,7 @@
         /* ================================================= */
         /* GENERATE HALAMAN KOSAKATA DAN QUIZ (LANJUTAN)     */
         /* ================================================= */
-        chapters.forEach(function (bab) {
+        validChapters.forEach(function (bab) {
           if (!bab || !bab.words) return;
           for (var i = 0; i < bab.words.length; i += 6) {
             var chunk = bab.words.slice(i, i + 6);
@@ -1915,12 +1915,12 @@
           {
             en: "Back to Table of Contents",
             id: "Kembali ke Daftar Isi",
-            targetIdx: 6,
+            targetIdx: fixedPages.length,
             isMain: true,
           },
         ];
 
-        chapters.forEach(function (bab) {
+       validChapters.forEach(function (bab) {
           if (!bab || !bab.words) return;
           var judulIndonesiaBab = bab.title_id || bab.id_ || bab.title;
           shortcutItems.push({
