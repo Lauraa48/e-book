@@ -6,7 +6,6 @@ const CORE_ASSETS = [
   "./index.html",
   "./manifest.json",
   "./data/kosakata.json",
-  "./data/quiz.json",
   "./js/quiz.js",
   "./page/front_cover.html",
   "./page/introduction.html",
@@ -22,7 +21,6 @@ const CORE_ASSETS = [
   "./font/GeorgiaPro-SemiBold.ttf",
   "./font/NunitoSans-Italic.ttf",
   "https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.js",
-
   "./img/tableofcontent.png",
   "./img/shortcut_bg.png",
   "./img/start-quiz.png",
