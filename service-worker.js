@@ -23,7 +23,7 @@ const CORE_ASSETS = [
   "https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.js",
   "./img/tableofcontent.png",
   "./img/shortcut_bg.png",
-  "./img/start-quiz.png",
+  "./img/start_quiz.png",
   "./img/think1.png",
   "./img/think2.png",
   "./img/happy1.png",
