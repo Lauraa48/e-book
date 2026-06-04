@@ -46,16 +46,10 @@ const CORE_ASSETS = [
 self.addEventListener("install", (e) => {
   e.waitUntil(
     caches.open(CACHE).then(async (cache) => {
-      await Promise.allSettled(
-        CORE_ASSETS.map((url) =>
-          cache
-            .add(url)
-            .catch((err) =>
-              console.warn("[SW] Skip Core Asset:", url, err.message),
-            ),
-        ),
-      );
+      // 1. Wajibkan semua CORE_ASSETS. Jika 1 gagal, install SW dibatalkan.
+      await cache.addAll(CORE_ASSETS);
 
+      // 2. Biarkan dynamic images tetap best-effort (karena jumlahnya mungkin banyak)
       try {
         const response = await fetch("./data/kosakata.json");
         const data = await response.json();
@@ -89,7 +83,6 @@ self.addEventListener("install", (e) => {
     }),
   );
 });
-
 /* ─────────────────────────────────────────
    ACTIVATE
    ───────────────────────────────────────── */
