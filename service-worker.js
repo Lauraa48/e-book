@@ -1,6 +1,6 @@
 "use strict";
 
-const CACHE = "E-Kamus-V15";
+const CACHE = "E-Kamus-V16;
 
 const CORE_ASSETS = [
   "./index.html",
