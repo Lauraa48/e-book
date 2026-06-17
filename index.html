@@ -2042,26 +2042,41 @@
           "touchstart",
           function (e) {
             var item = e.target.closest(".vocab-item");
-            if (!item) return;
-            e.stopPropagation(); // capture phase — PageFlip belum lihat
-            _lastTouchTarget = item;
+            var toc  = e.target.closest(".toc-card");
+            var scut = e.target.closest(".shortcut-btn");
+            if (!item && !toc && !scut) return;
+            e.stopPropagation();
+            _lastTouchTarget = item || toc || scut;
             unlockTTS();
           },
-          { capture: true, passive: true },
+          { capture: true, passive: true }
         );
 
         container.addEventListener(
-          "touchend",
+         "touchend",
           function (e) {
             var item = e.target.closest(".vocab-item");
-            if (!item || item !== _lastTouchTarget) return;
+            var toc  = e.target.closest(".toc-card");
+            var scut = e.target.closest(".shortcut-btn");
+            var target = item || toc || scut;
+      
+            if (!target || target !== _lastTouchTarget) return;
             e.preventDefault();
-            e.stopPropagation(); // capture phase
-            var w = item.dataset.word;
-            if (w) openZoom(w, item);
+            e.stopPropagation();
+      
+            if (item) {
+              var w = item.dataset.word;
+              if (w) openZoom(w, item);
+            } else {
+              // toc-card dan shortcut-btn — ambil angka dari onclick="goToPage(X)"
+              var attr = target.getAttribute("onclick") || "";
+              var match = attr.match(/goToPage\((\d+)\)/);
+              if (match) goToPage(parseInt(match[1], 10));
+            }
+      
             _lastTouchTarget = null;
           },
-          { capture: true, passive: false },
+          { capture: true, passive: false }
         );
 
         container.addEventListener(
